@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const passport = require('passport');
 const rtsIndex = require('./routes/index.router');
+var morgan = require('morgan');
 
 require('./config/config');
 require('./models/db');
@@ -32,27 +33,13 @@ app.use('/valid-password-token',rtsIndex);
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(cookieParser());
-app.use(express.static('public'));
-
-const server = require('http').createServer(app);
-
-// app.use(function(req,res, next){
-//   //console.log(req.headers);
-//   if (req.headers && req.headers.myHeaders && req.headers.myHeaders.token.split(' ')[0]==='JWT'){ //This is a get method.
-//     jsonwebtoken.verify(req.headers.token.split(' ')[1], 'RESTFULAPIs', function(err,decode){ 
-//       if (err) req.user = undefined; 
-//         req.user = decode;
-//         console.log(req.user);
-//         //console.log(req.user);
-//         //console.log("HI");
-//         next();
-//     });
-//   } else {
-//     req.user = undefined;
-//     next();
-//   }
-//   console.log(req.user);
-// }); This program was moved to jwtHelper.js
+app.use(express.static('www'));
+app.use(function(req,res,next){
+    res.header("Access-Control-Allow-Origin", "*"); 
+    res.header("Access-Control-Allow-Methods","DELETE, PUT");
+    res.header("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 
 app.use((err, req, res, next) => {
     if (err.name === 'ValidationError'){

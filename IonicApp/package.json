@@ -13,6 +13,8 @@
   },
   "private": true,
   "dependencies": {
+    "@ionic/app-scripts": "2.1.4",
+    "typescript":"2.3.4",
     "@angular/common": "~8.2.14",
     "@angular/core": "~8.2.14",
     "@angular/forms": "~8.2.14",

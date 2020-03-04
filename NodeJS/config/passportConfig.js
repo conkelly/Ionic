@@ -40,6 +40,3 @@ passport.use('jwt', new JWTStrategy({
             });
     }
 ));
-     
-     
-
