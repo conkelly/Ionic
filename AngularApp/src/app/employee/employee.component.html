@@ -1,0 +1,130 @@
+<div class="row">
+  <div class="col s12">
+    <div class="card">
+      <div class="card-content white-text">
+        <div class="row">
+          <div class="col s5">
+            <form #employeeForm="ngForm" (ngSubmit)="employeeForm.valid && onSubmit(employeeForm)">
+              <input type="hidden" name="_id" #_id="ngModel" [(ngModel)]="employeeService.selectedEmployee._id">
+              <div class="row">
+                <div class="input-field col s12">
+                  <input type="text" name="address" #address="ngModel" [(ngModel)]="employeeService.selectedEmployee.address" placeholder="Enter address" required [ngClass] = "{'invalid-textbox' : employeeForm.submitted && !address.valid }">
+                  <label>Address :
+                    <label class="red-text">*</label>
+                  </label>
+                  <div *ngIf = "!address.valid">
+                    <label class = "validation message">This field is required.</label> 
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field col s12">
+                  <input type="text" name="companyname" #companyname="ngModel" [(ngModel)]="employeeService.selectedEmployee.companyname" placeholder="Enter Company Name" required [ngClass] = "{'invalid-textbox' : employeeForm.submitted && !companyname.valid }">
+                  <label>Company Name :</label>
+                  <div *ngIf = "!companyname.valid">
+                    <label class = "validation message">This field is required.</label> 
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field col s12">
+                  <input type="text" name="zipcode" #zipcode="ngModel" [(ngModel)]="employeeService.selectedEmployee.zipcode" placeholder="Enter zip code" [pattern] = "zipRegex" required [ngClass] = "{'invalid-textbox' : employeeForm.submitted && !zipcode.valid }">
+                  <label>Zip-Code :</label>
+                  <div *ngIf = "zipcode.errors">
+                    <label *ngIf = "zipcode.errors.required" class = "validation message">This field is required.</label> 
+                    <label *ngIf = "zipcode.errors.pattern" class = "validation message">Invalid zip code.</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field col s12">
+                  <input type="text" name="email" #email="ngModel" [(ngModel)]="employeeService.selectedEmployee.email" placeholder="Enter email" [pattern] = "emailRegex" required [ngClass] = "{'invalid-textbox' : employeeForm.submitted && !email.valid }">
+                  <label>Email :</label>
+                  <div *ngIf = "email.errors">
+                    <label *ngIf = "email.errors.required" class = "validation message">This field is required.</label> 
+                    <label *ngIf = "email.errors.pattern" class = "validation message">Invalid email address.</label>
+                </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field col s12">
+                  <input type="text" name="phone" #phone="ngModel" [(ngModel)]="employeeService.selectedEmployee.phone" placeholder="Phone number" [pattern] = "phoneRegex" required [ngClass] = "{'invalid-textbox' : employeeForm.submitted && !phone.valid }">
+                  <label>Phone :</label>
+                  <div *ngIf = "phone.errors">
+                    <label *ngIf = "phone.errors.required" class = "validation message">This field is required.</label> 
+                    <label *ngIf = "phone.errors.pattern" class = "validation message">Invalid phone number.</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field col s12">
+                  <input type="text" name="website" #website="ngModel" [(ngModel)]="employeeService.selectedEmployee.website" placeholder="Enter website" [pattern] = "websiteRegex" required [ngClass] = "{'invalid-textbox' : employeeForm.submitted && !website.valid }">
+                  <label>Website :</label>
+                  <div *ngIf = "website.errors">
+                    <label *ngIf = "website.errors.required" class = "validation message">This field is required.</label> 
+                    <label *ngIf = "website.errors.pattern" class = "validation message">Invalid website.</label>
+                </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field col s12">
+                  <input type="text" name="description" #description="ngModel" [(ngModel)]="employeeService.selectedEmployee.description" placeholder="Enter description" required [ngClass] = "{'invalid-textbox' : employeeForm.submitted && !description.valid }" >
+                  <label>Description :</label>
+                  <div *ngIf = "!description.valid">
+                    <label class = "validation message">This field is required.</label> 
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field col s12">
+                  <button class = "btn btn-custom-right" type = "button" (click) = onLogout()>Log Out</button> 
+                  <button class="btn btn-custom right" type="button" (click)="resetForm(employeeForm)">Reset</button>
+                  <button class="btn btn-custom right" type="submit" [disabled]="!employeeForm.valid">Submit</button> 
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="col s7">
+              <table class="responsive-table highlight">
+                  <thead>
+                    <tr>
+                      <th>Address</th>
+                      <th>Company Name</th>
+                      <th>Zip Code</th>
+                      <th>Email</th>
+                      <th>Phone</th> 
+                      <th>Website</th> 
+                      <th>Description</th> 
+                      <th *ngIf="employeeService.localStorageItem('role') == 'Admin'">User</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tr *ngFor="let emp of employeeService.employees">
+                    <td>{{emp.address}}</td>
+                    <td>{{emp.companyname}}</td>
+                    <td>{{emp.zipcode}}</td>
+                    <td>{{emp.email}}</td>
+                    <td>{{emp.phone}}</td>
+                    <td>{{emp.website}}</td>
+                    <td>{{emp.description}}</td>
+                    <td *ngIf="employeeService.localStorageItem('role') == 'Admin'">{{emp.user}}</td>
+                    <td>
+                        <a class="action-btn" (click)="onEdit(emp)">
+                          <i class="material-icons">edit</i>
+                        </a>
+                        <a class="action-btn" (click)="onDelete(emp._id,employeeForm)">
+                          <i class="material-icons">delete</i>
+                        </a>
+                      </td>
+                  </tr>
+                </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class = "alert" *ngIf = "serverErrorMessages">
+  {{serverErrorMessages}}
+</div> 
